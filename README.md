@@ -6,17 +6,15 @@ practice, 10-question challenge, quiz result, badges, progress, review, settings
 Everything (content + progress) is stored on the device, so it works offline.
 
 ## App icon
-The real AccelLab logo (`assets/icon/icon.png`) is wired up via the
-`flutter_launcher_icons` package. After `flutter pub get`, generate the
-icons once with:
+The AccelLab logo (`assets/icon/icon.png`) is wired up as the Android
+launcher icon via the `flutter_launcher_icons` package. After `flutter pub
+get`, generate the Android icons with:
 
     flutter pub run flutter_launcher_icons
 
-This writes the launcher icon files into `android/` (and `ios/`, `web/`,
-`windows/` if those folders exist in your project) — do this once whenever
-you replace the logo image. It needs internet only the very first time, to
-download the `flutter_launcher_icons` package itself; the icon generation
-step itself runs locally.
+This writes the launcher icon files into `android/` — run it again whenever
+you replace the logo image. The icon generation step runs locally once the
+package is available.
 
 ## Install over your existing project
 1. In your existing `accellab` project folder, DELETE the old `lib` folder.
