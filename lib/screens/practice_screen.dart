@@ -160,7 +160,13 @@ class _PracticeScreenState extends State<PracticeScreen> {
       return const _SessionSevenPracticeScreen();
     }
     if (widget.sessionId == 2) {
-      return _ConceptPracticeScreen(sessionId: widget.sessionId!);
+      return const _SessionTwoPracticeScreen();
+    }
+    if (widget.sessionId == 3) {
+      return const _SessionThreePracticeScreen();
+    }
+    if (widget.sessionId == 4) {
+      return const _SessionFourPracticeScreen();
     }
     final s = AppScope.of(context);
     final p = _p;
@@ -1189,3 +1195,1600 @@ String _whoTl(String who) => const {
       'graph': 'grap',
       'airplane': 'eroplano',
     }[who]!;
+
+class _S2Example {
+  final String emoji;
+  final IconData? arrow;
+  final String statement;
+  final String statementTl;
+  final int answer;
+  final String reason;
+  final String reasonTl;
+  const _S2Example(this.emoji, this.arrow, this.statement, this.statementTl,
+      this.answer, this.reason, this.reasonTl);
+}
+
+class _SessionTwoPracticeScreen extends StatefulWidget {
+  const _SessionTwoPracticeScreen();
+
+  @override
+  State<_SessionTwoPracticeScreen> createState() =>
+      _SessionTwoPracticeScreenState();
+}
+
+class _SessionTwoPracticeScreenState
+    extends State<_SessionTwoPracticeScreen> {
+  final Map<int, int> _answers = {};
+  int _current = 0;
+
+  static const _choices = ['SPEED', 'VELOCITY', 'ACCELERATION'];
+
+  static const _examples = <_S2Example>[
+    _S2Example(
+        '🚴',
+        null,
+        'A bicycle travels at 15 m/s.',
+        'May bisikletang gumagalaw sa 15 m/s.',
+        0,
+        'Only how fast the bicycle moves is given. No direction is included.',
+        'Tanging kung gaano kabilis ang bisikleta ang binigay. Walang direksiyong kasama.'),
+    _S2Example(
+        '🚴',
+        Icons.arrow_upward_rounded,
+        'A bicycle travels at 15 m/s north.',
+        'May bisikletang gumagalaw sa 15 m/s pahilaga.',
+        1,
+        'The statement gives both speed and direction.',
+        'Binibigay ng pangungusap ang bilis at direksiyon.'),
+    _S2Example(
+        '🚌',
+        null,
+        'The Bachelor Tours bus increases its speed from 10 m/s to 20 m/s.',
+        'Pinapabilis ang bus ng Bachelor Tours mula 10 m/s hanggang 20 m/s.',
+        2,
+        'Its velocity changed because its speed increased.',
+        'Nagbago ang velocity nito dahil tumaas ang speed nito.'),
+    _S2Example(
+        '🚌',
+        Icons.turn_right_rounded,
+        'The Bachelor Tours bus travels at 20 m/s east and turns north.',
+        'Gumagalaw ang bus ng Bachelor Tours sa 20 m/s pasilangan at lumiliko pahilaga.',
+        2,
+        'Its direction changed, so its velocity changed.',
+        'Nagbago ang direksiyon nito, kaya nagbago ang velocity nito.'),
+  ];
+
+  void _answer(int index, int choice) {
+    if (_answers.containsKey(index)) return;
+    setState(() => _answers[index] = choice);
+    if (choice == _examples[index].answer) {
+      AppScope.of(context).solvedOne();
+    }
+  }
+
+  void _next() {
+    if (_current < _examples.length - 1) {
+      setState(() => _current++);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tagalog = AppScope.of(context).tagalog;
+    final complete = _answers.length == _examples.length;
+    final score = _answers.entries
+        .where((entry) => _examples[entry.key].answer == entry.value)
+        .length;
+
+    return Scaffold(
+      appBar: AppBar(
+        title:
+            Text(l10n(context, 'Session 2 · Practice', 'Sesyon 2 · Pagsasanay')),
+      ),
+      bottomNavigationBar: const SessionPageNavigationBar(
+        sessionId: 2,
+        currentPage: SessionPage.practice,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0872D9), Color(0xFF063F9B)],
+          ),
+        ),
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 18),
+          children: [
+            _header(context),
+            const SizedBox(height: 9),
+            Center(child: _progressDots()),
+            const SizedBox(height: 9),
+            _card(context, _current, tagalog),
+            if (_answers.containsKey(_current) &&
+                _current < _examples.length - 1) ...[
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                height: 42,
+                child: ElevatedButton.icon(
+                  onPressed: _next,
+                  icon: const Icon(Icons.arrow_forward_rounded,
+                      color: Colors.white),
+                  label: Text(
+                    l10n(context, 'Next Example', 'Susunod na Halimbawa'),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 13),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: C.green,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ),
+            ],
+            if (complete) ...[
+              const SizedBox(height: 4),
+              _scoreBanner(context, score),
+              const SizedBox(height: 9),
+            ],
+            _rememberBanner(context),
+            const SizedBox(height: 9),
+            _placesFooter(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _header(BuildContext context) => Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isDark(context) ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+              color: isDark(context)
+                  ? Colors.white24
+                  : const Color(0xFFB6EBFF),
+              width: 2),
+        ),
+        child: Column(children: [
+          Row(children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                  color: C.blue, shape: BoxShape.circle),
+              child:
+                  const Icon(Icons.info_rounded, color: Colors.white, size: 18),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                l10n(context, 'PRACTICE: Speed, Velocity, or Acceleration?',
+                    'PAGSASANAY: Speed, Velocity, o Acceleration?'),
+                style: TextStyle(
+                    color: isDark(context) ? Colors.white : C.navy,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    height: 1.1),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 7),
+          Text(
+            l10n(
+                context,
+                'Read each situation. Choose whether it describes SPEED, VELOCITY, or ACCELERATION. Then, check the reason why.',
+                'Basahin ang bawat sitwasyon. Piliin kung ito ba ay SPEED, VELOCITY, o ACCELERATION. Pagkatapos, tingnan ang dahilan.'),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: isDark(context) ? Colors.white : C.blue,
+                fontSize: 10.5,
+                fontWeight: FontWeight.w700,
+                height: 1.3),
+          ),
+        ]),
+      );
+
+  Widget _card(BuildContext context, int index, bool tagalog) {
+    final e = _examples[index];
+    final answered = _answers.containsKey(index);
+    final chosen = _answers[index];
+    final correct = e.answer;
+    final chipColors = [C.blue, C.teal, C.orange];
+
+    return Container(
+      padding: const EdgeInsets.all(9),
+      decoration: BoxDecoration(
+        color: isDark(context) ? Colors.black : Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+            color: isDark(context)
+                ? Colors.white24
+                : const Color(0xFFB6EBFF),
+            width: 2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            CircleAvatar(
+              radius: 10,
+              backgroundColor: C.blue,
+              child: Text('${index + 1}',
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold)),
+            ),
+            const SizedBox(width: 5),
+            Text(
+                l10n(context, 'Example ${index + 1}',
+                    'Halimbawa ${index + 1}'),
+                style: TextStyle(
+                    color: isDark(context) ? Colors.white : C.navy,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w900)),
+          ]),
+          const SizedBox(height: 6),
+          Container(
+            height: 52,
+            width: double.infinity,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE6F5FF),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Text(e.emoji, style: const TextStyle(fontSize: 32)),
+                if (e.arrow != null)
+                  Positioned(
+                    bottom: 2,
+                    right: 4,
+                    child:
+                        Icon(e.arrow, color: C.blue, size: 20),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n(context, e.statement, e.statementTl),
+            style: TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w800,
+                color: isDark(context) ? Colors.white : C.navy,
+                height: 1.25),
+          ),
+          const SizedBox(height: 7),
+          Row(children: [
+            for (var c = 0; c < _choices.length; c++) ...[
+              Expanded(
+                child: GestureDetector(
+                  onTap: answered ? null : () => _answer(index, c),
+                  child: Container(
+                    height: 23,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    decoration: BoxDecoration(
+                      color: !answered
+                          ? chipColors[c].withValues(alpha: .14)
+                          : (c == correct
+                              ? chipColors[c]
+                              : chipColors[c].withValues(alpha: .10)),
+                      borderRadius: BorderRadius.circular(7),
+                      border: Border.all(
+                        color: answered && c == correct
+                            ? chipColors[c]
+                            : chipColors[c].withValues(alpha: .45),
+                      ),
+                    ),
+                    child: Text(
+                      _choices[c],
+                      style: TextStyle(
+                        fontSize: 8.5,
+                        fontWeight: FontWeight.w900,
+                        color: !answered || c == correct
+                            ? (c == correct && answered
+                                ? Colors.white
+                                : chipColors[c])
+                            : chipColors[c].withValues(alpha: .55),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (c < _choices.length - 1) const SizedBox(width: 4),
+            ],
+          ]),
+          if (answered) ...[
+            const SizedBox(height: 6),
+            Row(children: [
+              Icon(chosen == correct
+                  ? Icons.check_circle_rounded
+                  : Icons.info_rounded,
+                  color: chosen == correct
+                      ? const Color(0xFF14844F)
+                      : const Color(0xFFD32F2F),
+                  size: 13),
+              const SizedBox(width: 3),
+              Flexible(
+                child: Text(
+                  l10n(
+                      context,
+                      chosen == correct
+                          ? 'Correct Answer!'
+                          : 'Not quite — the correct answer is ${_choices[correct]}',
+                      chosen == correct
+                          ? 'Tamang Sagot!'
+                          : 'Mali — ang tamang sagot ay ${_choices[correct]}'),
+                  style: TextStyle(
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w800,
+                      color: isDark(context) ? Colors.white : C.navy),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+            ]),
+            const SizedBox(height: 5),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: C.purple,
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.help_rounded, color: Colors.white, size: 11),
+                const SizedBox(width: 3),
+                Text(
+                    l10n(context, 'Why?', 'Bakit?'),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w900)),
+              ]),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n(context, e.reason, e.reasonTl),
+              style: TextStyle(
+                  fontSize: 9.8,
+                  height: 1.3,
+                  color: isDark(context) ? Colors.white70 : C.navy,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _progressDots() => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < _examples.length; i++)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                width: i == _current ? 26 : 9,
+                height: 9,
+                decoration: BoxDecoration(
+                  color: i == _current
+                      ? Colors.white
+                      : _answers.containsKey(i)
+                          ? Colors.white.withValues(alpha: .6)
+                          : Colors.white.withValues(alpha: .3),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+            ),
+        ],
+      );
+
+  Widget _scoreBanner(BuildContext context, int score) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(11),
+        decoration: BoxDecoration(
+          color: isDark(context) ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(children: [
+          Text(
+            l10n(context, 'Practice complete: $score / 4',
+                'Tapos na ang pagsasanay: $score / 4'),
+            style: TextStyle(
+                color: isDark(context) ? Colors.white : C.navy,
+                fontSize: 15,
+                fontWeight: FontWeight.w900),
+          ),
+        ]),
+      );
+
+  Widget _rememberBanner(BuildContext context) => Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isDark(context) ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            padding: const EdgeInsets.all(7),
+            decoration:
+                const BoxDecoration(color: C.navy, shape: BoxShape.circle),
+            child: const Icon(Icons.lightbulb_rounded,
+                color: Color(0xFFFFD83D), size: 17),
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      l10n(context, 'Remember!', 'Tandaan!'),
+                      style: TextStyle(
+                          color: isDark(context) ? Colors.white : C.navy,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 2),
+                  Text(
+                    l10n(
+                        context,
+                        'Speed tells how fast. Velocity tells how fast and where. Acceleration when the velocity changes.',
+                        'Ang speed ay nagsasabi kung gaano kabilis. Ang velocity ay gaano kabilis at saan. Acceleration kapag nagbago ang velocity.'),
+                    style: TextStyle(
+                        fontSize: 9.8,
+                        height: 1.3,
+                        color: isDark(context) ? Colors.white70 : C.navy,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ]),
+          ),
+        ]),
+      );
+
+  Widget _placesFooter(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: .16),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.location_on, color: Colors.white, size: 13),
+          SizedBox(width: 5),
+          Text(
+            'TAGBINA, SURIGAO DEL SUR',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 9.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.1),
+          ),
+        ]),
+      );
+}
+
+class _S3Problem {
+  final String statement;
+  final String statementTl;
+  final List<String> options;
+  final List<String> optionsTl;
+  final int answer;
+  final String reason;
+  final String reasonTl;
+  const _S3Problem(this.statement, this.statementTl, this.options,
+      this.optionsTl, this.answer, this.reason, this.reasonTl);
+}
+
+// NOTE: per physics, #1 = 2 m/s² to the right (20−10 N, 5 kg) and #3 = 40 N
+// (15+25 N) — corrected from the poster's answer key.
+const _s3Problems = <_S3Problem>[
+  _S3Problem(
+      'A box is pushed with 20 N to the right and 10 N to the left. Its mass is 5 kg. What is its acceleration?',
+      'Tinulak ang kahon ng 20 N pakanan at 10 N pakaliwa. Ang masa nito ay 5 kg. Ano ang akselerasyon nito?',
+      [
+        '2 m/s² to the right',
+        '3 m/s² to the right',
+        '6 m/s² to the left',
+        '10 m/s² to the right',
+      ],
+      [
+        '2 m/s² pakanan',
+        '3 m/s² pakanan',
+        '6 m/s² pakaliwa',
+        '10 m/s² pakanan',
+      ],
+      0,
+      'Fnet = 20 − 10 = 10 N, so a = Fnet / m = 10 / 5 = 2 m/s² to the right.',
+      'Fnet = 20 − 10 = 10 N, kaya a = Fnet / m = 10 / 5 = 2 m/s² pakanan.'),
+  _S3Problem(
+      'A car experiences a net force of 30 N. Its mass is 10 kg. What is its acceleration?',
+      'Nakakaranas ang kotse ng netong puwersang 30 N. Ang masa nito ay 10 kg. Ano ang akselerasyon nito?',
+      ['2 m/s²', '3 m/s²', '10 m/s²', '300 m/s²'],
+      ['2 m/s²', '3 m/s²', '10 m/s²', '300 m/s²'],
+      1,
+      'a = Fnet / m = 30 / 10 = 3 m/s².',
+      'a = Fnet / m = 30 / 10 = 3 m/s².'),
+  _S3Problem(
+      'Two students push a box to the right with forces of 15 N and 25 N. What is the total force if both push in the same direction?',
+      'Nagtulak ang dalawang estudyante ng kahon pakanan gamit ang 15 N at 25 N. Ano ang kabuuang puwersa kung sa parehong direksyon sila nagtulak?',
+      ['10 N', '25 N', '40 N', '50 N'],
+      ['10 N', '25 N', '40 N', '50 N'],
+      2,
+      'Forces in the same direction add: 15 N + 25 N = 40 N.',
+      'Pinagdaragdag ang mga puwersa sa parehong direksyon: 15 N + 25 N = 40 N.'),
+  _S3Problem(
+      'A 10 kg cart experiences a net force of 20 N to the left. What is its acceleration?',
+      'Ang karitong 10 kg ay nakakaranas ng netong puwersang 20 N pakaliwa. Ano ang akselerasyon nito?',
+      [
+        '2 m/s² to the left',
+        '2 m/s² to the right',
+        '10 m/s² to the left',
+        '200 m/s² to the right',
+      ],
+      [
+        '2 m/s² pakaliwa',
+        '2 m/s² pakanan',
+        '10 m/s² pakaliwa',
+        '200 m/s² pakanan',
+      ],
+      0,
+      'a = Fnet / m = 20 / 10 = 2 m/s², same direction as the net force (left).',
+      'a = Fnet / m = 20 / 10 = 2 m/s², pareho ng direksyon ng netong puwersa (pakaliwa).'),
+  _S3Problem(
+      'Two cars experience the same net force of 60 N. Car A has a mass of 10 kg while Car B has a mass of 20 kg. Which car has greater acceleration?',
+      'Pareho ang netong puwersang 60 N ng dalawang kotse. Ang Car A ay may masang 10 kg habang ang Car B ay 20 kg. Aling kotse ang mas malaki ang akselerasyon?',
+      [
+        'Car A',
+        'Car B',
+        'Both have the same acceleration',
+        'Neither car accelerates',
+      ],
+      [
+        'Car A',
+        'Car B',
+        'Pareho ito ng akselerasyon',
+        'Walang umaakselerasyon sa kanila',
+      ],
+      0,
+      'a = Fnet / m. Same force but smaller mass gives bigger acceleration: Car A = 6 m/s², Car B = 3 m/s².',
+      'a = Fnet / m. Parehong puwersa pero mas maliit na masa ay mas malaking akselerasyon: Car A = 6 m/s², Car B = 3 m/s².'),
+];
+
+class _SessionThreePracticeScreen extends StatefulWidget {
+  const _SessionThreePracticeScreen();
+
+  @override
+  State<_SessionThreePracticeScreen> createState() =>
+      _SessionThreePracticeScreenState();
+}
+
+class _SessionThreePracticeScreenState
+    extends State<_SessionThreePracticeScreen> {
+  final Map<int, int> _answers = {};
+
+  static const _problemColors = [C.red, C.orange, C.green, C.blue, C.navy];
+  static const _letterColors = [C.red, C.orange, C.green, Color(0xFF8BC34A)];
+
+  void _answer(int problem, int option) {
+    if (_answers.containsKey(problem)) return;
+    setState(() => _answers[problem] = option);
+    if (option == _s3Problems[problem].answer) {
+      AppScope.of(context).solvedOne();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tagalog = AppScope.of(context).tagalog;
+    final complete = _answers.length == _s3Problems.length;
+    final score = _answers.entries
+        .where((entry) => _s3Problems[entry.key].answer == entry.value)
+        .length;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+            l10n(context, 'Session 3 · Practice', 'Sesyon 3 · Pagsasanay')),
+      ),
+      bottomNavigationBar: const SessionPageNavigationBar(
+        sessionId: 3,
+        currentPage: SessionPage.practice,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0872D9), Color(0xFF063F9B)],
+          ),
+        ),
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 18),
+          children: [
+            _header(context),
+            const SizedBox(height: 9),
+            for (var i = 0; i < _s3Problems.length; i++)
+              _problemCard(context, i, tagalog),
+            if (complete) ...[
+              const SizedBox(height: 9),
+              _scoreBanner(context, score),
+              const SizedBox(height: 9),
+              BigButton(
+                l10n(context, 'NEXT: CHALLENGE →', 'SUSUNOD: HAMON →'),
+                color: C.orange,
+                onTap: () =>
+                    go(context, const SessionChallengeScreen(sessionId: 3)),
+              ),
+            ],
+            const SizedBox(height: 9),
+            _rememberBanner(context),
+            const SizedBox(height: 9),
+            _placesFooter(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _header(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+              colors: [Color(0xFF087BEA), Color(0xFF13B8E7)]),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(children: [
+          Text(l10n(context, 'PRACTICE', 'PAGSASANAY'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 23,
+                  fontWeight: FontWeight.w900,
+                  height: 1.0)),
+          const SizedBox(height: 4),
+          Text(
+              l10n(context, 'Net Force Causes Acceleration',
+                  'Sanhi ng Akselerasyon ang Netong Puwersa'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Color(0xFFFFD83D),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w900)),
+          const SizedBox(height: 5),
+          Text(
+            l10n(context, 'Solve each problem. Choose the correct answer.',
+                'Lutasin ang bawat problema. Piliin ang tamang sagot.'),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w700),
+          ),
+        ]),
+      );
+
+  Widget _problemCard(BuildContext context, int index, bool tagalog) {
+    final p = _s3Problems[index];
+    final answered = _answers.containsKey(index);
+    final chosen = _answers[index];
+    final correct = p.answer;
+    final dark = isDark(context);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(9),
+      decoration: BoxDecoration(
+        color: dark ? Colors.black : Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+            color: dark ? Colors.white24 : const Color(0xFFB6EBFF), width: 2),
+      ),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                width: 26,
+                height: 26,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: _problemColors[index],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text('${index + 1}',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900)),
+              ),
+              const SizedBox(width: 7),
+              Expanded(
+                child: Text(
+                  l10n(context, p.statement, p.statementTl),
+                  style: TextStyle(
+                      fontSize: 11.5,
+                      height: 1.3,
+                      fontWeight: FontWeight.w800,
+                      color: dark ? Colors.white : C.navy),
+                ),
+              ),
+            ]),
+            const SizedBox(height: 7),
+            _illustration(context, index, dark),
+            const SizedBox(height: 7),
+            Row(children: [
+              _chip(context, index, 0, dark),
+              const SizedBox(width: 4),
+              _chip(context, index, 1, dark),
+            ]),
+            const SizedBox(height: 5),
+            Row(children: [
+              _chip(context, index, 2, dark),
+              const SizedBox(width: 4),
+              _chip(context, index, 3, dark),
+            ]),
+            if (answered) ...[
+              const SizedBox(height: 6),
+              Row(children: [
+                Icon(
+                    chosen == correct
+                        ? Icons.check_circle_rounded
+                        : Icons.info_rounded,
+                    color: chosen == correct
+                        ? const Color(0xFF14844F)
+                        : const Color(0xFFD32F2F),
+                    size: 13),
+                const SizedBox(width: 3),
+                Flexible(
+                  child: Text(
+                    l10n(
+                        context,
+                        chosen == correct
+                            ? 'Correct Answer!'
+                            : 'Not quite — check the green answer',
+                        chosen == correct
+                            ? 'Tamang Sagot!'
+                            : 'Hindi tama — tingnan ang berdeng sagot'),
+                    style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w800,
+                        color: dark ? Colors.white : C.navy),
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 5),
+              Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDDF5E5),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  l10n(context, p.reason, p.reasonTl),
+                  style: const TextStyle(
+                      fontSize: 9.8,
+                      height: 1.3,
+                      color: Color(0xFF176B43),
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ]),
+    );
+  }
+
+  Widget _chip(BuildContext context, int problem, int option, bool dark) {
+    final p = _s3Problems[problem];
+    final answered = _answers.containsKey(problem);
+    final chosen = _answers[problem];
+    final isCorrect = option == p.answer;
+    final letterColor = _letterColors[option];
+    final color = !answered
+        ? letterColor.withValues(alpha: .14)
+        : isCorrect
+            ? const Color(0xFFDDF5E5)
+            : chosen == option
+                ? const Color(0xFFFFE0E2)
+                : letterColor.withValues(alpha: .10);
+    final borderColor = !answered
+        ? letterColor.withValues(alpha: .45)
+        : isCorrect
+            ? C.green
+            : chosen == option
+                ? C.red
+                : Colors.transparent;
+    return Expanded(
+      child: GestureDetector(
+        onTap: answered ? null : () => _answer(problem, option),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(9),
+            border: Border.all(color: borderColor, width: 1.2),
+          ),
+          child: Row(children: [
+            Container(
+              width: 17,
+              height: 17,
+              alignment: Alignment.center,
+              decoration:
+                  BoxDecoration(color: letterColor, shape: BoxShape.circle),
+              child: Text(String.fromCharCode(65 + option),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900)),
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                l10n(context, p.options[option], p.optionsTl[option]),
+                style: TextStyle(
+                    fontSize: 8.8,
+                    fontWeight: FontWeight.w800,
+                    height: 1.1,
+                    color: dark ? Colors.white : C.navy),
+                maxLines: 3,
+                overflow: TextOverflow.visible,
+              ),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _illustration(BuildContext context, int index, bool dark) {
+    final List<Widget> kids;
+    switch (index) {
+      case 0:
+        kids = [
+          _forceTag('10 N', C.blue, Icons.arrow_back_rounded),
+          const SizedBox(width: 5),
+          _crateBox(),
+          const SizedBox(width: 5),
+          _forceTag('20 N', C.red, Icons.arrow_forward_rounded),
+          const SizedBox(width: 7),
+          _massTag('m = 5 kg'),
+        ];
+        break;
+      case 1:
+        kids = [
+          _forceTag('30 N', C.red, Icons.arrow_forward_rounded),
+          const SizedBox(width: 5),
+          const Text('🚗', style: TextStyle(fontSize: 22)),
+          const SizedBox(width: 7),
+          _massTag('m = 10 kg'),
+        ];
+        break;
+      case 2:
+        kids = [
+          _pushingStudent(),
+          const SizedBox(width: 3),
+          _forceTag('15 N', C.red, Icons.arrow_forward_rounded),
+          const SizedBox(width: 4),
+          _crateBox(),
+          const SizedBox(width: 4),
+          _forceTag('25 N', C.red, Icons.arrow_forward_rounded),
+          const SizedBox(width: 3),
+          Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.diagonal3Values(-1, 1, 1),
+            child: _pushingStudent(),
+          ),
+        ];
+        break;
+      case 3:
+        kids = [
+          _forceTag('20 N', C.blue, Icons.arrow_back_rounded),
+          const SizedBox(width: 5),
+          const Text('🛒', style: TextStyle(fontSize: 22)),
+          const SizedBox(width: 7),
+          _massTag('m = 10 kg'),
+        ];
+        break;
+      default:
+        kids = [
+          _carCompare('Car A', '🚗', 'm = 10 kg'),
+          const SizedBox(width: 10),
+          _carCompare('Car B', '🚙', 'm = 20 kg'),
+          const SizedBox(width: 10),
+          _forceTag('Fnet = 60 N', C.blue, Icons.arrow_forward_rounded),
+        ];
+    }
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 6),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: const Color(0xFFE6F5FF),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Wrap(
+          spacing: 6,
+          runSpacing: 5,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: kids),
+    );
+  }
+
+  Widget _forceTag(String label, Color color, IconData icon) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+        decoration:
+            BoxDecoration(color: color, borderRadius: BorderRadius.circular(999)),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, color: Colors.white, size: 12),
+          const SizedBox(width: 2),
+          Text(label,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w900)),
+        ]),
+      );
+
+  Widget _crateBox() => Container(
+        width: 26,
+        height: 26,
+        decoration: BoxDecoration(
+          color: const Color(0xffad6b3b),
+          border: Border.all(color: C.navy, width: 1),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Icon(Icons.grid_on_rounded,
+            size: 13, color: Color(0xffffd79b)),
+      );
+
+  // Student pushing right, from the user-provided sprite image.
+  Widget _pushingStudent() => SizedBox(
+        width: 34,
+        height: 30,
+        child: Image.asset('assets/images/pushing_student.png',
+            fit: BoxFit.cover, alignment: Alignment.center),
+      );
+
+  Widget _massTag(String text) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: C.navy, width: 1),
+        ),
+        child: Text(text,
+            style: const TextStyle(
+                fontSize: 8.5,
+                fontWeight: FontWeight.w900,
+                color: C.navy)),
+      );
+
+  Widget _carCompare(String name, String emoji, String mass) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(name,
+              style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  color: C.navy)),
+          Text(emoji, style: const TextStyle(fontSize: 17)),
+          Text(mass,
+              style: const TextStyle(
+                  fontSize: 8,
+                  fontWeight: FontWeight.w700,
+                  color: C.navy)),
+        ],
+      );
+
+  Widget _scoreBanner(BuildContext context, int score) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(11),
+        decoration: BoxDecoration(
+          color: isDark(context) ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(children: [
+          Text(
+            l10n(context, 'Practice complete: $score / 5',
+                'Tapos na ang pagsasanay: $score / 5'),
+            style: TextStyle(
+                color: isDark(context) ? Colors.white : C.navy,
+                fontSize: 15,
+                fontWeight: FontWeight.w900),
+          ),
+        ]),
+      );
+
+  Widget _rememberBanner(BuildContext context) => Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isDark(context) ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            padding: const EdgeInsets.all(7),
+            decoration:
+                const BoxDecoration(color: C.navy, shape: BoxShape.circle),
+            child: const Icon(Icons.lightbulb_rounded,
+                color: Color(0xFFFFD83D), size: 17),
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n(context, 'Remember!', 'Tandaan!'),
+                      style: TextStyle(
+                          color: isDark(context) ? Colors.white : C.navy,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 2),
+                  Text(
+                    l10n(
+                        context,
+                        'a = Fnet / m. Acceleration depends on the net force and the mass.',
+                        'a = Fnet / m. Nakadepende ang akselerasyon sa netong puwersa at sa masa.'),
+                    style: TextStyle(
+                        fontSize: 9.8,
+                        height: 1.3,
+                        color: isDark(context) ? Colors.white70 : C.navy,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ]),
+          ),
+        ]),
+      );
+
+  Widget _placesFooter(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: .16),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.location_on, color: Colors.white, size: 13),
+          SizedBox(width: 5),
+          Text(
+            'TAGBINA, SURIGAO DEL SUR',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 9.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.1),
+          ),
+        ]),
+      );
+}
+
+class _S4Problem {
+  final String emoji;
+  final String statement;
+  final String statementTl;
+  final double vi;
+  final double vf;
+  final double t;
+  final double a;
+  const _S4Problem(
+      this.emoji, this.statement, this.statementTl, this.vi, this.vf, this.t, this.a);
+}
+
+const _s4Problems = <_S4Problem>[
+  _S4Problem(
+      '🚗',
+      'A car changes from 5 m/s to 15 m/s in 5 seconds.',
+      'Ang kotse ay nagbago mula 5 m/s hanggang 15 m/s sa loob ng 5 segundo.',
+      5, 15, 5, 2),
+  _S4Problem(
+      '🚴',
+      'A bicycle changes from 4 m/s to 16 m/s in 6 seconds.',
+      'Ang bisikleta ay nagbago mula 4 m/s hanggang 16 m/s sa loob ng 6 segundo.',
+      4, 16, 6, 2),
+  _S4Problem(
+      '🚌',
+      'A bus changes from 10 m/s to 30 m/s in 10 seconds.',
+      'Ang bus ay nagbago mula 10 m/s hanggang 30 m/s sa loob ng 10 segundo.',
+      10, 30, 10, 2),
+  _S4Problem(
+      '🚚',
+      'A truck changes from 20 m/s to 5 m/s in 5 seconds.',
+      'Ang truck ay nagbago mula 20 m/s hanggang 5 m/s sa loob ng 5 segundo.',
+      20, 5, 5, -3),
+];
+
+class _SessionFourPracticeScreen extends StatefulWidget {
+  const _SessionFourPracticeScreen();
+
+  @override
+  State<_SessionFourPracticeScreen> createState() =>
+      _SessionFourPracticeScreenState();
+}
+
+class _SessionFourPracticeScreenState
+    extends State<_SessionFourPracticeScreen> {
+  final Map<int, bool> _solved = {};
+  final Map<int, bool> _wrong = {};
+  late final List<TextEditingController> _ctrls;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrls = [
+      for (var i = 0; i < _s4Problems.length; i++) TextEditingController()
+    ];
+  }
+
+  @override
+  void dispose() {
+    for (final c in _ctrls) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  void _check(int index) {
+    final p = _s4Problems[index];
+    final raw = _ctrls[index].text.replaceAll('−', '-');
+    final v = double.tryParse(raw);
+    final scope = AppScope.of(context);
+    scope.click();
+    if (v == null) return;
+    if ((v - p.a).abs() < 0.01) {
+      if (_solved[index] != true) scope.solvedOne();
+      setState(() {
+        _solved[index] = true;
+        _wrong.remove(index);
+      });
+    } else {
+      setState(() => _wrong[index] = true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final complete = _solved.length == _s4Problems.length;
+    final score = _solved.length;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+            l10n(context, 'Session 4 · Practice', 'Sesyon 4 · Pagsasanay')),
+      ),
+      bottomNavigationBar: const SessionPageNavigationBar(
+        sessionId: 4,
+        currentPage: SessionPage.practice,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0872D9), Color(0xFF063F9B)],
+          ),
+        ),
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 18),
+          children: [
+            _header(context),
+            const SizedBox(height: 9),
+            for (var i = 0; i < _s4Problems.length; i++)
+              _problemCard(context, i),
+            if (complete) ...[
+              const SizedBox(height: 9),
+              _scoreBanner(context, score),
+              const SizedBox(height: 9),
+              BigButton(
+                l10n(context, 'NEXT: CHALLENGE →', 'SUSUNOD: HAMON →'),
+                color: C.orange,
+                onTap: () =>
+                    go(context, const SessionChallengeScreen(sessionId: 4)),
+              ),
+            ],
+            const SizedBox(height: 9),
+            _rememberBanner(context),
+            const SizedBox(height: 9),
+            _placesFooter(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _header(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+              colors: [Color(0xFF087BEA), Color(0xFF13B8E7)]),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(children: [
+          Row(children: [
+            const Icon(Icons.search_rounded,
+                color: Color(0xFFFFD83D), size: 30),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text.rich(
+                TextSpan(children: [
+                  TextSpan(
+                      text: l10n(context, 'PRACTICE: ', 'PAGSASANAY: '),
+                      style: const TextStyle(
+                          color: Color(0xFFFFD83D), fontSize: 16.5)),
+                  TextSpan(
+                      text: l10n(context, 'SOLVE FOR ACCELERATION',
+                          'SOLUSYUNAN ANG AKSELERASYON'),
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 15)),
+                ]),
+                style: const TextStyle(fontWeight: FontWeight.w900, height: 1.05),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 6),
+          Text(
+            l10n(
+                context,
+                'Find the acceleration using the formula. Show your solution.',
+                'Hanapin ang akselerasyon gamit ang pormula. Ipakita ang solusyon.'),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 10.5,
+                fontWeight: FontWeight.w700),
+          ),
+        ]),
+      );
+
+  Widget _problemCard(BuildContext context, int index) {
+    final p = _s4Problems[index];
+    final solved = _solved[index] == true;
+    final wrong = _wrong[index] == true;
+    final dark = isDark(context);
+    final badgeColor = const [C.red, C.orange, C.green, C.blue][index];
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(9),
+      decoration: BoxDecoration(
+        color: dark ? Colors.black : Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+            color: dark ? Colors.white24 : const Color(0xFFB6EBFF), width: 2),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            width: 26,
+            height: 26,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: badgeColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text('${index + 1}',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900)),
+          ),
+          const SizedBox(width: 7),
+          Expanded(
+            child: Text(
+              l10n(context, p.statement, p.statementTl),
+              style: TextStyle(
+                  fontSize: 11.5,
+                  height: 1.3,
+                  fontWeight: FontWeight.w800,
+                  color: dark ? Colors.white : C.navy),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 6),
+        IntrinsicHeight(
+          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Container(
+            width: 58,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE6F5FF),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(p.emoji, style: const TextStyle(fontSize: 27)),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+              decoration: BoxDecoration(
+                color: C.blue.withValues(alpha: .10),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n(context, 'Given:', 'Bigay:'),
+                        style: const TextStyle(
+                            color: C.blue,
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: .5)),
+                    const SizedBox(height: 2),
+                    Text('vᵢ = ${fmt(p.vi)} m/s',
+                        style: TextStyle(
+                            color: dark ? Colors.white : C.navy,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            height: 1.25)),
+                    Text('v_f = ${fmt(p.vf)} m/s',
+                        style: TextStyle(
+                            color: dark ? Colors.white : C.navy,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            height: 1.25)),
+                    Text('t = ${fmt(p.t)} s',
+                        style: TextStyle(
+                            color: dark ? Colors.white : C.navy,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            height: 1.25)),
+                  ]),
+            ),
+          ),
+        ]),
+        ),
+        const SizedBox(height: 7),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration:
+              BoxDecoration(color: C.blue, borderRadius: BorderRadius.circular(999)),
+          child: Text(l10n(context, 'Solution:', 'Solusyon:'),
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w900)),
+        ),
+        const SizedBox(height: 4),
+        Text('a = (vf − vi) ÷ t',
+            style: TextStyle(
+                color: dark ? Colors.white : C.navy,
+                fontSize: 12,
+                fontWeight: FontWeight.w900)),
+        const SizedBox(height: 4),
+        if (!solved) ...[
+          Row(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                  color: const Color(0xFFFFC7D9),
+                  borderRadius: BorderRadius.circular(999)),
+              child: Text(l10n(context, 'Acceleration', 'Akselerasyon'),
+                  style: const TextStyle(
+                      color: C.navy,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900)),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: TextField(
+                controller: _ctrls[index],
+                readOnly: wrong,
+                keyboardType: const TextInputType.numberWithOptions(
+                    signed: true, decimal: true),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    color: C.navy),
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: '?',
+                  hintStyle: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                      color: C.navy),
+                  suffixText: ' m/s²',
+                  suffixStyle: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      color: C.navy),
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 6, vertical: 8),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                          color: wrong ? C.red : const Color(0xFFB6EBFF),
+                          width: 1.4)),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide:
+                          const BorderSide(color: C.blue, width: 1.4)),
+                ),
+                onChanged: (_) {
+                  if (wrong) setState(() => _wrong.remove(index));
+                },
+                onSubmitted: (_) => _check(index),
+              ),
+            ),
+            const SizedBox(width: 6),
+            SizedBox(
+              height: 32,
+              width: 44,
+              child: ElevatedButton(
+                onPressed: () => _check(index),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: C.blue,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: const Icon(Icons.check_rounded, size: 19),
+              ),
+            ),
+          ]),
+          if (wrong) ...[
+            const SizedBox(height: 5),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Icon(Icons.info_rounded,
+                  color: Color(0xFFB41F07), size: 13),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                    l10n(
+                        context,
+                        'Not quite. Take vf − vi first, then divide by t. Watch the sign!',
+                        'Hindi pa tama. Kunin muna ang vf − vi, tapos hatiin sa t. Pansinin ang tanda!'),
+                    style: const TextStyle(
+                        color: Color(0xFFB41F07),
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w700,
+                        height: 1.25)),
+              ),
+            ]),
+          ],
+        ] else ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFDDF5E5),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('a = ( ${fmt(p.vf)} − ${fmt(p.vi)} ) ÷ ${fmt(p.t)}',
+                      style: const TextStyle(
+                          color: C.navy,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800)),
+                  Text('a = ${fmt(p.vf - p.vi)} ÷ ${fmt(p.t)}',
+                      style: const TextStyle(
+                          color: C.navy,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 2),
+                  Text(
+                      l10n(context, 'Acceleration = ${fmt(p.a)} m/s²',
+                          'Akselerasyon = ${fmt(p.a)} m/s²'),
+                      style: const TextStyle(
+                          color: Color(0xFF176B43),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900)),
+                ]),
+          ),
+          const SizedBox(height: 4),
+          Row(children: [
+            const Icon(Icons.check_circle_rounded,
+                color: Color(0xFF14844F), size: 14),
+            const SizedBox(width: 4),
+            Text(l10n(context, 'Correct Answer!', 'Tamang Sagot!'),
+                style: const TextStyle(
+                    color: Color(0xFF14844F),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900)),
+          ]),
+        ],
+      ]),
+    );
+  }
+
+  Widget _scoreBanner(BuildContext context, int score) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(11),
+        decoration: BoxDecoration(
+          color: isDark(context) ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Center(
+          child: Text(
+            l10n(context, 'Practice complete: $score / 4',
+                'Tapos na ang pagsasanay: $score / 4'),
+            style: TextStyle(
+                color: isDark(context) ? Colors.white : C.navy,
+                fontSize: 15,
+                fontWeight: FontWeight.w900),
+          ),
+        ),
+      );
+
+  Widget _rememberBanner(BuildContext context) => Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isDark(context) ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            padding: const EdgeInsets.all(7),
+            decoration:
+                const BoxDecoration(color: C.navy, shape: BoxShape.circle),
+            child: const Icon(Icons.lightbulb_rounded,
+                color: Color(0xFFFFD83D), size: 17),
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n(context, 'Remember!', 'Tandaan!'),
+                      style: TextStyle(
+                          color: isDark(context) ? Colors.white : C.navy,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 3),
+                  Text('a = (vf − vi) ÷ t',
+                      style: TextStyle(
+                          color: isDark(context) ? Colors.white : C.navy,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 2),
+                  Text(
+                    l10n(
+                        context,
+                        'Acceleration is the change in velocity divided by time.',
+                        'Ang akselerasyon ay ang pagbabago ng velocity na hinati sa oras.'),
+                    style: TextStyle(
+                        fontSize: 9.8,
+                        height: 1.3,
+                        color: isDark(context) ? Colors.white70 : C.navy,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ]),
+          ),
+        ]),
+      );
+
+  Widget _placesFooter(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: .16),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.location_on, color: Colors.white, size: 13),
+          SizedBox(width: 5),
+          Text(
+            'TAGBINA, SURIGAO DEL SUR',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 9.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.1),
+          ),
+        ]),
+      );
+}

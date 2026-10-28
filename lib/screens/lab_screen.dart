@@ -951,13 +951,12 @@ class _LabScreenState extends State<LabScreen>
         ),
         onPressed: onPressed,
         icon: Icon(icon, size: 17),
-        label: Flexible(
-            child: Text(label,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    fontSize: 10, fontWeight: FontWeight.w900))),
+        label: Text(label,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+                fontSize: 10, fontWeight: FontWeight.w900)),
       );
 
   Widget _stat(BuildContext context, String label, String value) {
@@ -2097,13 +2096,16 @@ class _GuidedQuestions extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold)),
         ),
         for (final item in items)
-          ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(horizontal: 4),
-            childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
-            title: Text(item.$1, style: const TextStyle(fontSize: 13)),
-            children: [
-              Text(item.$2, style: TextStyle(color: subText(context)))
-            ],
+          Material(
+            color: Colors.transparent,
+            child: ExpansionTile(
+              tilePadding: const EdgeInsets.symmetric(horizontal: 4),
+              childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
+              title: Text(item.$1, style: const TextStyle(fontSize: 13)),
+              children: [
+                Text(item.$2, style: TextStyle(color: subText(context)))
+              ],
+            ),
           ),
       ]),
     );

@@ -128,7 +128,7 @@ class _ExploreScreenState extends State<ExploreScreen>
             child: Stack(children: [
               _RoadScene(kind: _sit.kind, speed: _speed, scroll: _laneScroll),
               Positioned(
-                bottom: 16,
+                bottom: _sit.kind == _SceneKind.bikeLane ? 42 : 16,
                 left: 0,
                 right: 0,
                 child: Center(
@@ -351,59 +351,66 @@ class _RoadPainter extends CustomPainter {
     final grass = Paint()..color = _groundColor(kind);
     canvas.drawRect(Rect.fromLTWH(0, horizon, w, h - horizon), grass);
 
-    // ===== Layer 4: Road trapezoid (perspective) =====
-    final road = Paint()..color = _roadColor(kind);
-    final roadPath = Path()
-      ..moveTo(0, h)
-      ..lineTo(w, h)
-      ..lineTo(w * 0.62, horizon)
-      ..lineTo(w * 0.38, horizon)
-      ..close();
-    canvas.drawPath(roadPath, road);
+    // ===== Layers 4-6: Road, markings, borders =====
+    if (kind == _SceneKind.bikeLane) {
+      // Illustrated Session-2 style road: east, then bends north (up) on the
+      // right side of the scene and exits through the top.
+      _drawBikeTurnRoad(canvas, w, h, scroll);
+    } else {
+      // ===== Layer 4: Road trapezoid (perspective) =====
+      final road = Paint()..color = _roadColor(kind);
+      final roadPath = Path()
+        ..moveTo(0, h)
+        ..lineTo(w, h)
+        ..lineTo(w * 0.62, horizon)
+        ..lineTo(w * 0.38, horizon)
+        ..close();
+      canvas.drawPath(roadPath, road);
 
-    // ===== Layer 5: Center lane markings - dashed, animated toward viewer =====
-    final line = Paint()
-      ..color = _lineColor(kind)
-      ..strokeCap = StrokeCap.round;
+      // ===== Layer 5: Center lane markings - dashed, animated toward viewer =====
+      final line = Paint()
+        ..color = _lineColor(kind)
+        ..strokeCap = StrokeCap.round;
 
-    final laneCount = 14;
-    for (var i = 0; i < laneCount; i++) {
-      final t = ((i / laneCount) + scroll) % 1.0;
-      if (t < 0.03) continue;
+      final laneCount = 14;
+      for (var i = 0; i < laneCount; i++) {
+        final t = ((i / laneCount) + scroll) % 1.0;
+        if (t < 0.03) continue;
 
-      final halfW = _lerp(w * 0.10, w * 0.40, t);
-      final y = _lerp(horizon, h, t);
-      final dashLen = _lerp(5, 24, t);
-      final gap = _lerp(3, 14, t);
-      final segLen = dashLen + gap;
-      final phase = (scroll * 120 + i * 16) % segLen;
-      var xpos = -phase;
-      while (xpos < halfW * 2.2) {
-        final dx1 = w / 2 - halfW + xpos;
-        final dx2 = dx1 + dashLen;
-        if (dx2 > w / 2 - halfW && dx1 < w / 2 + halfW) {
-          canvas.drawLine(
-            Offset(dx1.clamp(w / 2 - halfW, w / 2 + halfW), y),
-            Offset(dx2.clamp(w / 2 - halfW, w / 2 + halfW), y),
-            line
-              ..strokeWidth = _lerp(2, 6, t),
-          );
+        final halfW = _lerp(w * 0.10, w * 0.40, t);
+        final y = _lerp(horizon, h, t);
+        final dashLen = _lerp(5, 24, t);
+        final gap = _lerp(3, 14, t);
+        final segLen = dashLen + gap;
+        final phase = (scroll * 120 + i * 16) % segLen;
+        var xpos = -phase;
+        while (xpos < halfW * 2.2) {
+          final dx1 = w / 2 - halfW + xpos;
+          final dx2 = dx1 + dashLen;
+          if (dx2 > w / 2 - halfW && dx1 < w / 2 + halfW) {
+            canvas.drawLine(
+              Offset(dx1.clamp(w / 2 - halfW, w / 2 + halfW), y),
+              Offset(dx2.clamp(w / 2 - halfW, w / 2 + halfW), y),
+              line
+                ..strokeWidth = _lerp(2, 6, t),
+            );
+          }
+          xpos += segLen;
         }
-        xpos += segLen;
       }
-    }
 
-    // ===== Layer 6: Road borders =====
-    final border = Paint()
-      ..color = _lineColor(kind)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
-    final borderPath = Path()
-      ..moveTo(w * 0.38, horizon)
-      ..lineTo(0, h)
-      ..moveTo(w * 0.62, horizon)
-      ..lineTo(w, h);
-    canvas.drawPath(borderPath, border);
+      // ===== Layer 6: Road borders =====
+      final border = Paint()
+        ..color = _lineColor(kind)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3;
+      final borderPath = Path()
+        ..moveTo(w * 0.38, horizon)
+        ..lineTo(0, h)
+        ..moveTo(w * 0.62, horizon)
+        ..lineTo(w, h);
+      canvas.drawPath(borderPath, border);
+    }
 
     // ===== Layer 7: Roadside scenery (on top of road) =====
     _drawRoadside(canvas, w, h, horizon, kind, scroll);
@@ -412,6 +419,60 @@ class _RoadPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _RoadPainter old) =>
       old.kind != kind || old.speed != speed || old.scroll != scroll;
+
+  // ---------------- Session-2 style road: east, then bend north ----------------
+
+  void _drawBikeTurnRoad(
+      Canvas canvas, double w, double h, double scroll) {
+    final roadPath = Path()
+      ..moveTo(-w * .05, h * .75)
+      ..lineTo(w * .50, h * .75)
+      ..cubicTo(
+          w * .72, h * .75, w * .80, h * .58, w * .80, h * .42)
+      ..lineTo(w * .80, -h * .06);
+
+    // Cream road edge (same palette as the Session 2 lesson cards).
+    canvas.drawPath(
+      roadPath,
+      Paint()
+        ..color = const Color(0xFFF6F5E9)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = h * .15
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round,
+    );
+    // Asphalt on top of the edge.
+    canvas.drawPath(
+      roadPath,
+      Paint()
+        ..color = const Color(0xFF59656A)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = h * .12
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round,
+    );
+
+    // Yellow center dashes, scrolling along the road (dashes slide from the
+    // far end of the road back toward the rider, faking forward motion).
+    final dash = Paint()
+      ..color = const Color(0xFFFFE082)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.5
+      ..strokeCap = StrokeCap.round;
+    const period = 26.0;
+    final offset = (period - (scroll * period) % period) % period;
+    for (final metric in roadPath.computeMetrics()) {
+      var d = -period + offset;
+      while (d < metric.length) {
+        final start = d.clamp(0.0, metric.length);
+        final end = math.min(start + 12, metric.length);
+        if (end > start) {
+          canvas.drawPath(metric.extractPath(start, end), dash);
+        }
+        d += period;
+      }
+    }
+  }
 
   // ================= per-environment drawing helpers =================
 
@@ -745,19 +806,25 @@ class _RoadPainter extends CustomPainter {
         }
         break;
       case _SceneKind.bikeLane:
-        // Trees + flowers along roadside edges
-        final tree = Paint()..color = const Color(0xFF1B5E20);
+        // Trees + flowers flanking the bend strip (avoids standing on the
+        // horizontal road), matching the greenery in the Session 2 cards.
         final leaf = Paint()..color = const Color(0xFF4CAF50);
-        for (var i = 0; i < 6; i++) {
-          final t = ((i / 6) + scroll * 0.2) % 1.0;
-          final edgeX = i % 2 == 0 ? w * 0.02 : w - w * 0.06;
-          final scale = 0.8 + (i % 2) * 0.15;
-          final trunkH = h * 0.05 * scale;
-          final y = _lerp(horizon, h, t);
-          canvas.drawRect(
-              Rect.fromLTWH(edgeX - 2, y - trunkH, 4, trunkH), tree);
-          canvas.drawCircle(
-              Offset(edgeX, y - trunkH - 2), h * 0.045 * scale, leaf);
+        final trunk = Paint()..color = const Color(0xFF8C5A35);
+        final flower = Paint()..color = const Color(0xFFFF4081);
+        for (final y in [h * 0.50, h * 0.57]) {
+          for (final dx in [w * 0.07, w * 0.21, w * 0.94]) {
+            final scale = y == h * 0.50 ? 1.0 : 0.85;
+            final trunkH = h * 0.055 * scale;
+            canvas.drawRect(Rect.fromLTWH(dx - 2, y - trunkH, 4, trunkH), trunk);
+            canvas.drawCircle(Offset(dx, y - trunkH - 2), h * 0.05 * scale, leaf);
+          }
+        }
+        // Flowers along the roadside below the horizontal road.
+        for (var i = 0; i < 8; i++) {
+          final x = w * (0.06 + i * 0.13);
+          if ((x - w * 0.80).abs() > h * 0.12) {
+            canvas.drawCircle(Offset(x, h * 0.93), 4, flower);
+          }
         }
         break;
     }

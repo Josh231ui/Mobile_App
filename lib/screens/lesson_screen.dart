@@ -368,55 +368,36 @@ class _SessionThreeBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final tagalog = AppScope.of(context).tagalog;
     return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 13),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xff0755ce), Color(0xff168df0)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-              color: C.blue.withValues(alpha: .25),
-              blurRadius: 12,
-              offset: const Offset(0, 5)),
-        ],
+        borderRadius: BorderRadius.circular(18),
       ),
-      child: Row(children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          decoration: BoxDecoration(
-            color: C.yellow,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: Colors.white, width: 2),
-          ),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.menu_book_rounded, color: C.navy, size: 20),
-            Text(tagalog ? 'MATUTO' : 'LEARN',
-                style: const TextStyle(
-                    color: C.navy,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: .4)),
-          ]),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            tagalog
-                ? 'Ang Netong Puwersa ay Nagdudulot ng Akselerasyon'
-                : 'Net Force Causes Acceleration',
+      child: Column(children: [
+        Text(tagalog ? 'MATUTO' : 'LEARN',
             style: const TextStyle(
-                color: Colors.white,
-                fontSize: 23,
-                height: 1.04,
+                color: Color(0xFFFFD83D),
+                fontSize: 11,
                 fontWeight: FontWeight.w900,
-                letterSpacing: -.35),
-          ),
+                letterSpacing: 2.2)),
+        const SizedBox(height: 3),
+        Text(
+          tagalog
+              ? 'Ang Netong Puwersa ay Nagdudulot ng Akselerasyon'
+              : 'Net Force Causes Acceleration',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              height: 1.12,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -.2),
         ),
-        const SizedBox(width: 7),
-        const Icon(Icons.flag_rounded, color: C.yellow, size: 30),
       ]),
     );
   }
@@ -502,23 +483,39 @@ class _NetForceKeyIdea extends StatelessWidget {
   const _NetForceKeyIdea();
 
   @override
-  Widget build(BuildContext context) => _PosterCard(
-        color: const Color(0xfffff8df),
-        border: C.yellow,
-        label: l10n(context, 'KEY IDEA', 'MAHALAGANG IDEYA'),
-        labelColor: C.yellow,
-        child: Text.rich(
-            TextSpan(children: [
-              TextSpan(
-                  text: l10n(context, 'A net force ', 'Ang netong puwersa '),
-                  style: const TextStyle(fontWeight: FontWeight.w900)),
-              TextSpan(
-                  text: l10n(
-                      context,
-                      'is an unbalanced force that causes an object to accelerate in the direction of the net force.',
-                      'ay hindi balanseng puwersa na nagpapabilis sa isang bagay sa direksiyon ng netong puwersa.')),
-            ]),
-            style: const TextStyle(fontSize: 14, height: 1.32)),
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xfffff8df),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            const Icon(Icons.lightbulb_rounded,
+                color: Color(0xFFC98A00), size: 16),
+            const SizedBox(width: 5),
+            Text(l10n(context, 'KEY IDEA', 'MAHALAGANG IDEYA'),
+                style: const TextStyle(
+                    color: Color(0xFFC98A00),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2)),
+          ]),
+          const SizedBox(height: 6),
+          Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                    text: l10n(context, 'A net force ', 'Ang netong puwersa '),
+                    style: const TextStyle(fontWeight: FontWeight.w900)),
+                TextSpan(
+                    text: l10n(
+                        context,
+                        'is an unbalanced force that causes an object to accelerate in the direction of the net force.',
+                        'ay hindi balanseng puwersa na nagpapabilis sa isang bagay sa direksiyon ng netong puwersa.')),
+              ]),
+              style: const TextStyle(
+                  color: C.navy, fontSize: 14, height: 1.32)),
+        ]),
       );
 }
 
@@ -526,14 +523,26 @@ class _NewtonLawCard extends StatelessWidget {
   const _NewtonLawCard();
 
   @override
-  Widget build(BuildContext context) => _PosterCard(
-        color: const Color(0xfffff3cf),
-        border: C.orange,
-        label:
-            l10n(context, 'NEWTON’S SECOND LAW', 'IKALAWANG BATAS NI NEWTON'),
-        labelColor: C.orange,
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xfffff3cf),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            const Icon(Icons.functions_rounded,
+                color: Color(0xFFB45309), size: 16),
+            const SizedBox(width: 5),
+            Text(
+                l10n(context, 'NEWTON’S SECOND LAW', 'IKALAWANG BATAS NI NEWTON'),
+                style: const TextStyle(
+                    color: Color(0xFFB45309),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2)),
+          ]),
+          const SizedBox(height: 8),
           Center(
             child: Text.rich(
                 TextSpan(children: [
@@ -547,64 +556,17 @@ class _NewtonLawCard extends StatelessWidget {
                 style: const TextStyle(
                     fontSize: 36, height: 1.05, fontWeight: FontWeight.w900)),
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 6),
           Text(
               l10n(
                   context,
                   'Fₙₑₜ = net force (N)\nm = mass (kg)\na = acceleration (m/s²)',
                   'Fₙₑₜ = netong puwersa (N)\nm = masa (kg)\na = akselerasyon (m/s²)'),
               style: const TextStyle(
-                  fontSize: 12, height: 1.3, fontWeight: FontWeight.w600)),
-        ]),
-      );
-}
-
-class _PosterCard extends StatelessWidget {
-  final Color color;
-  final Color border;
-  final Color labelColor;
-  final String label;
-  final Widget child;
-
-  const _PosterCard(
-      {required this.color,
-      required this.border,
-      required this.labelColor,
-      required this.label,
-      required this.child});
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.fromLTRB(11, 17, 11, 11),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(17),
-          border: Border.all(color: border.withValues(alpha: .75), width: 1.5),
-        ),
-        child: Stack(clipBehavior: Clip.none, children: [
-          DefaultTextStyle.merge(
-            style: TextStyle(color: isDark(context) ? C.navy : null),
-            child: child,
-          ),
-          Positioned(
-            top: -27,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                decoration: BoxDecoration(
-                    color: labelColor, borderRadius: BorderRadius.circular(14)),
-                child: Text(label,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w900)),
-              ),
-            ),
-          ),
+                  color: C.navy,
+                  fontSize: 12,
+                  height: 1.3,
+                  fontWeight: FontWeight.w600)),
         ]),
       );
 }
@@ -645,7 +607,8 @@ class _ForceExampleCard extends StatelessWidget {
                     color: color, fontWeight: FontWeight.w900, fontSize: 13)),
             const SizedBox(height: 6),
             Row(children: [
-              Icon(person, color: C.navy, size: 31),
+              Icon(person,
+                  color: isDark(context) ? Colors.white : C.navy, size: 31),
               const SizedBox(width: 3),
               for (var i = 0; i < blocks; i++)
                 Container(
@@ -654,7 +617,11 @@ class _ForceExampleCard extends StatelessWidget {
                     margin: const EdgeInsets.only(right: 2),
                     decoration: BoxDecoration(
                         color: const Color(0xffad6b3b),
-                        border: Border.all(color: C.navy, width: 1),
+                        border: Border.all(
+                            color: isDark(context)
+                                ? Colors.white
+                                : C.navy,
+                            width: 1),
                         borderRadius: BorderRadius.circular(3)),
                     child: const Icon(Icons.grid_on_rounded,
                         size: 14, color: Color(0xffffd79b))),
@@ -687,6 +654,14 @@ class _NetForceRoadScene extends StatelessWidget {
               end: Alignment.bottomCenter),
         ),
         child: Stack(children: [
+          // Cartoon city skyline behind the car (like the lesson banner).
+          Positioned(
+              left: 0,
+              right: 0,
+              bottom: 29,
+              height: 56,
+              child: CustomPaint(painter: _NetForceCityPainter())),
+          // Road with dashes.
           Positioned(
               left: 0,
               right: 0,
@@ -704,32 +679,193 @@ class _NetForceRoadScene extends StatelessWidget {
                           width: 30,
                           height: 3,
                           color: Colors.white.withValues(alpha: .85))))),
+          // Bright red sports car, like the banner art.
           Positioned(
-              left: 10,
-              bottom: 35,
-              child: Icon(Icons.location_city_rounded,
-                  color: C.green.withValues(alpha: .8), size: 35)),
+              right: 10,
+              bottom: 3,
+              width: 170,
+              height: 70,
+              child: CustomPaint(painter: _SportsCarPainter())),
+          // Big red net-force arrow pointing at the car.
           Positioned(
-              left: 49,
-              bottom: 34,
-              child: Icon(Icons.park_rounded, color: C.green, size: 30)),
-          Positioned(
-              right: 7, bottom: 4, child: CarWidget(width: 157, color: C.red)),
-          Positioned(
-              left: 9,
-              top: 9,
-              child: Text(l10n(context, 'NET FORCE', 'NETONG PUWERSA'),
-                  style: const TextStyle(
-                      color: C.red,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 12))),
-          Positioned(
-              left: 13,
-              top: 24,
-              child:
-                  Icon(Icons.arrow_right_alt_rounded, color: C.red, size: 57)),
+            right: 14,
+            top: 8,
+            child: SizedBox(
+              width: 195,
+              height: 26,
+              child: Stack(children: [
+                Positioned.fill(
+                    child: CustomPaint(painter: _NetForceArrowPainter())),
+                Positioned(
+                    left: 16,
+                    top: 3,
+                    bottom: 3,
+                    child: Center(
+                      child: Text(
+                          l10n(context, 'Net Force', 'Netong Puwersa'),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10.5)),
+                    )),
+              ]),
+            ),
+          ),
         ]),
       );
+}
+
+// Blocky cartoon buildings + trees, bases sitting on the road.
+class _NetForceCityPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    const buildings = <(double, double, double, Color)>[
+      (0.02, .10, .55, Color(0xFFBFE3C2)),
+      (0.14, .08, .40, Color(0xFF9FD8A8)),
+      (0.24, .11, .62, Color(0xFFD2ECC6)),
+      (0.37, .08, .46, Color(0xFFBFE3C2)),
+      (0.52, .10, .58, Color(0xFFD2ECC6)),
+      (0.64, .08, .38, Color(0xFF9FD8A8)),
+      (0.74, .10, .52, Color(0xFFBFE3C2)),
+      (0.86, .09, .44, Color(0xFFD2ECC6)),
+    ];
+    for (final (x, bw, bh, color) in buildings) {
+      final rect = Rect.fromLTWH(size.width * x, size.height * (1 - bh),
+          size.width * bw, size.height * bh);
+      canvas.drawRect(rect, Paint()..color = color);
+      final win = Paint()..color = Colors.white.withValues(alpha: .85);
+      final cols = (size.width * bw / 10).floor();
+      final rows = (size.height * bh / 12).floor();
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          canvas.drawRect(
+              Rect.fromLTWH(rect.left + 3 + c * 10, rect.top + 5 + r * 12,
+                  4.5, 5),
+              win);
+        }
+      }
+      canvas.drawRect(Rect.fromLTWH(rect.left, rect.top, rect.width, 2.5),
+          Paint()..color = Colors.white.withValues(alpha: .8));
+    }
+    // Trees between the buildings.
+    final leaves = Paint()..color = const Color(0xFF4CAF50);
+    final trunk = Paint()..color = const Color(0xFF8C5A35);
+    for (final x in [0.44, 0.70]) {
+      final px = size.width * x;
+      canvas.drawRect(
+          Rect.fromLTWH(px - 2, size.height - 16, 4, 16), trunk);
+      canvas.drawCircle(Offset(px, size.height - 20), 10, leaves);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _NetForceCityPainter old) => false;
+}
+
+// Big thick red arrow pointing right.
+class _NetForceArrowPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(6, size.height * .18)
+      ..lineTo(size.width * .78, size.height * .18)
+      ..lineTo(size.width * .78, 0)
+      ..lineTo(size.width, size.height / 2)
+      ..lineTo(size.width * .78, size.height)
+      ..lineTo(size.width * .78, size.height * .82)
+      ..lineTo(6, size.height * .82)
+      ..quadraticBezierTo(0, size.height / 2, 6, size.height * .16)
+      ..close();
+    canvas.drawPath(path, Paint()..color = C.red);
+  }
+
+  @override
+  bool shouldRepaint(covariant _NetForceArrowPainter old) => false;
+}
+
+// Bright red coupe facing right (unit space 160 x 70).
+class _SportsCarPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.save();
+    canvas.scale(size.width / 160.0);
+
+    // Shadow under the car.
+    canvas.drawOval(
+        Rect.fromLTWH(8, 55, 148, 8),
+        Paint()..color = Colors.black.withValues(alpha: .18));
+
+    const red = Color(0xFFE84118);
+    // Lower body.
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(4, 32, 152, 22), const Radius.circular(9)),
+        Paint()..color = red);
+    // Cabin.
+    final cabin = Path()
+      ..moveTo(28, 34)
+      ..lineTo(44, 16)
+      ..quadraticBezierTo(47, 13, 52, 13)
+      ..lineTo(92, 13)
+      ..quadraticBezierTo(99, 13, 104, 19)
+      ..lineTo(114, 34)
+      ..close();
+    canvas.drawPath(cabin, Paint()..color = red);
+    // Windows.
+    final window = Path()
+      ..moveTo(50, 16.5)
+      ..lineTo(91, 16.5)
+      ..lineTo(101, 31)
+      ..lineTo(46, 31)
+      ..close();
+    canvas.drawPath(window, Paint()..color = const Color(0xFF232A33));
+    // Door pillar.
+    canvas.drawRect(
+        Rect.fromLTWH(70, 16.5, 4, 14.5), Paint()..color = red);
+    // Door seam + handle.
+    canvas.drawLine(
+        const Offset(72, 36),
+        const Offset(72, 52),
+        Paint()
+          ..color = const Color(0xFFB41F07)
+          ..strokeWidth = 1.6);
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(Rect.fromLTWH(84, 39, 11, 3),
+            const Radius.circular(2)),
+        Paint()..color = const Color(0xFFFFE1D9));
+    // Headlight + taillight.
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(Rect.fromLTWH(146, 37, 9, 5),
+            const Radius.circular(2.5)),
+        Paint()..color = const Color(0xFFFFF3C4));
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(5, 37, 6, 6), const Radius.circular(2)),
+        Paint()..color = const Color(0xFFB41F07));
+    // Front bumper accent.
+    canvas.drawRect(
+        Rect.fromLTWH(130, 48, 24, 4),
+        Paint()..color = const Color(0xFFB41F07));
+
+    // Wheel arches, tires, rims and hubs.
+    final arch = Paint()..color = const Color(0xFF232A33);
+    canvas.drawCircle(const Offset(40, 53), 17, arch);
+    canvas.drawCircle(const Offset(122, 53), 17, arch);
+    final tire = Paint()..color = const Color(0xFF17191D);
+    canvas.drawCircle(const Offset(40, 53), 14, tire);
+    canvas.drawCircle(const Offset(122, 53), 14, tire);
+    final rim = Paint()..color = const Color(0xFFF2F4F6);
+    canvas.drawCircle(const Offset(40, 53), 7, rim);
+    canvas.drawCircle(const Offset(122, 53), 7, rim);
+    final hub = Paint()..color = const Color(0xFF9AA2AB);
+    canvas.drawCircle(const Offset(40, 53), 2.5, hub);
+    canvas.drawCircle(const Offset(122, 53), 2.5, hub);
+
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _SportsCarPainter old) => false;
 }
 
 class _RememberNetForceCard extends StatelessWidget {
@@ -2344,6 +2480,25 @@ class _SessionTwoMotionCardState extends State<_SessionTwoMotionCard>
                   Curves.easeInOut.transform(_laneController.value);
               final bikeWidth = math.min(44.0, constraints.maxWidth * .2);
               final endX = math.max(0.0, constraints.maxWidth - bikeWidth);
+              const sceneHeight = 86.0;
+              final forward =
+                  _laneController.status != AnimationStatus.reverse;
+              var bikePos = Offset.zero;
+              var bikeAngle = 0.0;
+              if (widget.vehicle == VehicleType.bicycle) {
+                final lanePath = _LaneChangeRoadPainter.lanePathOf(
+                    Size(constraints.maxWidth, sceneHeight));
+                final metric = lanePath.computeMetrics().first;
+                final tangent = metric.getTangentForOffset(
+                    (metric.length * progress).clamp(0.0, metric.length));
+                if (tangent != null) {
+                  bikePos = tangent.position;
+                  var angle = math.atan2(tangent.vector.dy, tangent.vector.dx);
+                  if (!forward) angle += math.pi;
+                  // The sprite artwork faces down; align it with the ride.
+                  bikeAngle = angle - math.pi / 2;
+                }
+              }
               return ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Stack(children: [
@@ -2352,20 +2507,37 @@ class _SessionTwoMotionCardState extends State<_SessionTwoMotionCard>
                       painter: _LaneChangeRoadPainter(color: widget.color),
                     ),
                   ),
-                  Positioned(
-                    left: 6 + (endX - 6) * progress,
-                    bottom: 1 + 40 * progress,
-                    child: Transform.scale(
-                      scaleX: _laneController.status == AnimationStatus.reverse
-                          ? -1
-                          : 1,
-                      child: VehicleWidget(
-                        type: widget.vehicle,
-                        width: bikeWidth,
-                        spin: math.sin(progress * math.pi) * 4,
+                  if (widget.vehicle == VehicleType.bicycle)
+                    Positioned(
+                      left: bikePos.dx,
+                      top: bikePos.dy,
+                      child: FractionalTranslation(
+                        translation: const Offset(-0.5, -0.5),
+                        child: Transform.rotate(
+                          angle: bikeAngle,
+                          child: Image.asset(
+                            'assets/images/top_down_biker.png',
+                            width: 30,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Positioned(
+                      left: 6 + (endX - 6) * progress,
+                      bottom: 1 + 40 * progress,
+                      child: Transform.scale(
+                        scaleX: _laneController.status == AnimationStatus.reverse
+                            ? -1
+                            : 1,
+                        child: VehicleWidget(
+                          type: widget.vehicle,
+                          width: bikeWidth,
+                          spin: math.sin(progress * math.pi) * 4,
+                        ),
                       ),
                     ),
-                  ),
                 ]),
               );
             },
@@ -2442,28 +2614,50 @@ class _LaneChangeRoadPainter extends CustomPainter {
   final Color color;
   const _LaneChangeRoadPainter({required this.color});
 
+  // Shared lane geometry: rider enters from the right, rides straight to the
+  // intersection, then turns right across it. Used by the road painter and by
+  // the biker sprite overlay so they always line up.
+  static Path lanePathOf(Size size) => Path()
+    ..moveTo(size.width - 12, size.height * .55)
+    ..lineTo(size.width * .42, size.height * .55)
+    ..cubicTo(size.width * .30, size.height * .55, size.width * .26,
+        size.height * .44, size.width * .26, size.height * .30);
+
   @override
   void paint(Canvas canvas, Size size) {
+    // Concrete surroundings around the intersection.
     canvas.drawRect(
-        Offset.zero & size, Paint()..color = const Color(0xff45525f));
-    final edge = Paint()
-      ..color = Colors.white.withValues(alpha: .85)
-      ..strokeWidth = 2;
-    canvas.drawLine(Offset(0, 4), Offset(size.width, 4), edge);
-    canvas.drawLine(
-        Offset(0, size.height - 4), Offset(size.width, size.height - 4), edge);
+        Offset.zero & size, Paint()..color = const Color(0xFFA9ADB5));
+
+    final road = Paint()..color = const Color(0xff45525f);
+    final hTop = size.height * .20;
+    final hBottom = size.height * .88;
+    // Horizontal road.
+    canvas.drawRect(Rect.fromLTWH(0, hTop, size.width, hBottom - hTop), road);
+    // Vertical crossing road — centered where the rider makes the right turn.
+    final vLeft = size.width * .13;
+    final vRight = size.width * .37;
+    canvas.drawRect(Rect.fromLTWH(vLeft, 0, vRight - vLeft, size.height), road);
+
+    // White dashed lane markings on both roads.
     final laneMark = Paint()
-      ..color = Colors.white.withValues(alpha: .8)
-      ..strokeWidth = 1.4;
-    for (var x = 0.0; x < size.width; x += 20) {
-      canvas.drawLine(Offset(x, size.height / 2),
-          Offset(math.min(x + 10, size.width), size.height / 2), laneMark);
+      ..color = Colors.white.withValues(alpha: .85)
+      ..strokeWidth = 1.6
+      ..strokeCap = StrokeCap.round;
+    final midY = size.height * .54;
+    for (var x = 6.0; x < size.width - 8; x += 22) {
+      if (x + 12 > vLeft && x < vRight) continue;
+      canvas.drawLine(Offset(x, midY),
+          Offset(math.min(x + 10, size.width), midY), laneMark);
+    }
+    final midX = (vLeft + vRight) / 2;
+    for (var y = 6.0; y < size.height - 8; y += 22) {
+      if (y + 12 > hTop && y < hBottom) continue;
+      canvas.drawLine(Offset(midX, y),
+          Offset(midX, math.min(y + 10, size.height)), laneMark);
     }
 
-    final lanePath = Path()
-      ..moveTo(12, size.height * .74)
-      ..cubicTo(size.width * .34, size.height * .74, size.width * .38,
-          size.height * .26, size.width - 12, size.height * .26);
+    final lanePath = lanePathOf(size);
     canvas.drawPath(
       lanePath,
       Paint()
@@ -2472,12 +2666,12 @@ class _LaneChangeRoadPainter extends CustomPainter {
         ..strokeWidth = 2.5
         ..strokeCap = StrokeCap.round,
     );
-    final end = Offset(size.width - 12, size.height * .26);
+    final end = Offset(size.width * .26, size.height * .26);
     canvas.drawCircle(end, 3, Paint()..color = Colors.white);
     final arrow = Path()
-      ..moveTo(end.dx - 7, end.dy - 5)
+      ..moveTo(end.dx - 5, end.dy + 7)
       ..lineTo(end.dx, end.dy)
-      ..lineTo(end.dx - 7, end.dy + 5);
+      ..lineTo(end.dx + 5, end.dy + 7);
     canvas.drawPath(
       arrow,
       Paint()
@@ -2560,6 +2754,32 @@ class _SessionTwoPracticalCard extends StatelessWidget {
     required this.value,
   });
 
+  Widget _markerBadge() => DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: .88),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: .16),
+              blurRadius: 4,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(2),
+          child: Icon(
+            switch (roadMarker) {
+              _RoadMarker.velocity => Icons.arrow_forward_rounded,
+              _RoadMarker.acceleration => Icons.fast_forward_rounded,
+              _RoadMarker.turn => Icons.turn_right_rounded,
+              _RoadMarker.none => Icons.arrow_forward_rounded,
+            },
+            color: color,
+            size: 25,
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) => SizedBox(
         width: width,
@@ -2587,6 +2807,44 @@ class _SessionTwoPracticalCard extends StatelessWidget {
                       constraints.maxWidth *
                           (roadMarker == _RoadMarker.none ? .70 : .58),
                       118.0);
+                  if (curvedRoad) {
+                    // Overhead intersection scene, same style as the lane
+                    // change card: approach from the right, turn right at the
+                    // crossing (the bus "turns north").
+                    final metric = _LaneChangeRoadPainter.lanePathOf(
+                            Size(constraints.maxWidth, 72))
+                        .computeMetrics()
+                        .first;
+                    final tangent =
+                        metric.getTangentForOffset(metric.length * .75)!;
+                    final angle =
+                        math.atan2(tangent.vector.dy, tangent.vector.dx) -
+                            math.pi; // the bus artwork faces left
+                    return Stack(children: [
+                      Positioned.fill(
+                        child: CustomPaint(
+                            painter: _LaneChangeRoadPainter(color: color)),
+                      ),
+                      Positioned(
+                        left: tangent.position.dx,
+                        top: tangent.position.dy,
+                        child: FractionalTranslation(
+                          translation: const Offset(-0.5, -0.5),
+                          child: Transform.rotate(
+                            angle: angle,
+                            child: _TopDownBus(
+                                width:
+                                    math.min(58.0, constraints.maxWidth * .48)),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 7,
+                        top: 8,
+                        child: _markerBadge(),
+                      ),
+                    ]);
+                  }
                   return Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
@@ -2617,34 +2875,7 @@ class _SessionTwoPracticalCard extends StatelessWidget {
                           right: 7,
                           top: roadMarker == _RoadMarker.turn ? 8 : null,
                           bottom: roadMarker == _RoadMarker.turn ? null : 8,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: .88),
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: .16),
-                                  blurRadius: 4,
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: Icon(
-                                switch (roadMarker) {
-                                  _RoadMarker.velocity =>
-                                    Icons.arrow_forward_rounded,
-                                  _RoadMarker.acceleration =>
-                                    Icons.fast_forward_rounded,
-                                  _RoadMarker.turn => Icons.turn_right_rounded,
-                                  _RoadMarker.none =>
-                                    Icons.arrow_forward_rounded,
-                                },
-                                color: color,
-                                size: 25,
-                              ),
-                            ),
-                          ),
+                          child: _markerBadge(),
                         ),
                     ],
                   );
@@ -2674,6 +2905,83 @@ class _SessionTwoPracticalCard extends StatelessWidget {
           ]),
         ),
       );
+}
+
+// Overhead bus (placeholder matching the reference art: yellow body, green
+// stripes, silver front cap, dark glass). Front points LEFT (-x).
+class _TopDownBus extends StatelessWidget {
+  final double width;
+  const _TopDownBus({required this.width});
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        width: width,
+        height: width * .5,
+        child: CustomPaint(
+            size: Size(width, width * .5), painter: _TopDownBusPainter()),
+      );
+}
+
+class _TopDownBusPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Unit space: bus is 52 long x 24 wide, centered at the origin.
+    canvas.save();
+    canvas.translate(size.width / 2, size.height / 2);
+    canvas.scale(size.width / 52.0);
+
+    // Soft shadow under the bus.
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromCenter(
+                center: const Offset(1, 2.5), width: 54, height: 24),
+            const Radius.circular(8)),
+        Paint()..color = Colors.black.withValues(alpha: .18));
+
+    // Roof body.
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromCenter(center: Offset.zero, width: 52, height: 24),
+            const Radius.circular(7)),
+        Paint()..color = const Color(0xFFFFC400));
+
+    // Front silver cap + dark windshield (front at left).
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(-27, -10.5, 7, 21), const Radius.circular(5)),
+        Paint()..color = const Color(0xFFB4BAC2));
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(-20, -9, 6.5, 18), const Radius.circular(2)),
+        Paint()..color = const Color(0xFF2E3A46));
+
+    // Green stripes across the front section.
+    final stripe = Paint()..color = const Color(0xFF3E9B4F);
+    canvas.drawRect(Rect.fromLTWH(-14, -12, 3.5, 24), stripe);
+    canvas.drawRect(Rect.fromLTWH(-9, -12, 2.5, 24), stripe);
+
+    // Roof hatch and rear AC unit.
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(1, -6, 9, 12), const Radius.circular(2)),
+        Paint()..color = const Color(0xFFE8B421));
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(15, -6.5, 8, 13), const Radius.circular(2)),
+        Paint()..color = const Color(0xFF9AA2AB));
+
+    // Side windows.
+    final glass = Paint()..color = const Color(0xFF2E3A46);
+    for (var x = 3.0; x <= 21.0; x += 5.5) {
+      canvas.drawRect(Rect.fromLTWH(x, -11, 3, 2.2), glass);
+      canvas.drawRect(Rect.fromLTWH(x, 8.8, 3, 2.2), glass);
+    }
+
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _TopDownBusPainter old) => false;
 }
 
 class _TagbilaranRoadPainter extends CustomPainter {
@@ -2727,19 +3035,19 @@ class _TagbilaranRoadPainter extends CustomPainter {
     }
 
     if (curved) {
-      // Road travels east, then bends north (up) on the right side of the
-      // card and exits through the top edge — the bus "turns north".
+      // Road travels east, then bends smoothly toward the top right corner
+      // like the turning example image — the bus "turns north".
       final roadPath = Path()
         ..moveTo(-size.width * .05, size.height * .80)
-        ..lineTo(size.width * .52, size.height * .80)
+        ..lineTo(size.width * .42, size.height * .80)
         ..cubicTo(
-            size.width * .74,
+            size.width * .70,
             size.height * .80,
-            size.width * .82,
-            size.height * .64,
-            size.width * .82,
-            size.height * .48)
-        ..lineTo(size.width * .82, -size.height * .06);
+            size.width * .86,
+            size.height * .62,
+            size.width * .96,
+            size.height * .44)
+        ..lineTo(size.width * 1.06, size.height * .38);
       canvas.drawPath(
         roadPath,
         Paint()

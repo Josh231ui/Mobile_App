@@ -25,6 +25,8 @@ flutter:
     - assets/vehicles/auto_rickshaw.png
     - assets/vehicles/bicycle.png
     - assets/vehicles/motorcycle.png
+    - assets/images/top_down_biker.png
+    - assets/images/pushing_student.png
 
 flutter_launcher_icons:
   android: true

@@ -1577,10 +1577,10 @@ class _ForceScenarioCard extends StatelessWidget {
             ]),
             const SizedBox(height: 5),
             Row(children: [
-              const Icon(Icons.arrow_back_rounded, color: C.blue, size: 19),
+              const Icon(Icons.arrow_back_rounded, color: C.navy, size: 19),
               Text('${fmt(left)} N',
                   style: const TextStyle(
-                      color: C.blue,
+                      color: C.navy,
                       fontSize: 10,
                       fontWeight: FontWeight.bold)),
               const Spacer(),
@@ -1591,8 +1591,8 @@ class _ForceScenarioCard extends StatelessWidget {
             ]),
             const SizedBox(height: 4),
             Text(question,
-                style: TextStyle(
-                    color: subText(context), fontSize: 10, height: 1.2)),
+                style: const TextStyle(
+                    color: C.navy, fontSize: 10, height: 1.2)),
           ]),
         ),
       );
